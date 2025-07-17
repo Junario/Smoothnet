@@ -57,3 +57,5 @@ def find_dataset_using_name(dataset_name):
             % (dataset_filename, target_dataset_name))
 
     return dataset
+
+BaseDataset = BaseDataset

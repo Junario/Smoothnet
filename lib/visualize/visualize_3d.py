@@ -63,8 +63,16 @@ def visualize_3d(vis_output_video_path,
                       estimator_name):
     print("Visualizing the result ...")
 
-    dataset_edges=eval(dataset_name.upper()+"_"+estimator_name.upper()+"_3D_EDGES")
-    dataset_joints=eval(dataset_name.upper()+"_"+estimator_name.upper()+"_3D_JOINTS")
+    try:
+        dataset_edges=eval(dataset_name.upper()+"_"+estimator_name.upper()+"_3D_EDGES")
+        dataset_joints=eval(dataset_name.upper()+"_"+estimator_name.upper()+"_3D_JOINTS")
+    except:
+        # Fallback: use default skeleton for custom datasets
+        print(f"Using default skeleton for {dataset_name}")
+        # Simple skeleton: connect adjacent joints
+        num_joints = data_gt.shape[1]
+        dataset_edges = [(i, i+1, True) for i in range(num_joints-1)]
+        dataset_joints = [(i, True) for i in range(num_joints)]
 
     if not os.path.exists(vis_output_video_path):
         os.makedirs(vis_output_video_path)
@@ -86,9 +94,21 @@ def visualize_3d(vis_output_video_path,
          np.array(calculate_accel_error(predicted_pos,
                                         data_gt).cpu()), np.array([0])))*m2mm
 
-    data_pred = np.array(data_pred.cpu())
-    data_gt = np.array(data_gt.cpu())
-    predicted_pos = np.array(predicted_pos.cpu())
+    # Convert to numpy arrays if they are tensors
+    if torch.is_tensor(data_pred):
+        data_pred = np.array(data_pred.cpu())
+    else:
+        data_pred = np.array(data_pred)
+    
+    if torch.is_tensor(data_gt):
+        data_gt = np.array(data_gt.cpu())
+    else:
+        data_gt = np.array(data_gt)
+    
+    if torch.is_tensor(predicted_pos):
+        predicted_pos = np.array(predicted_pos.cpu())
+    else:
+        predicted_pos = np.array(predicted_pos)
 
     anim_output = {
         'Estimator': data_pred,

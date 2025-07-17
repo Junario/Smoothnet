@@ -29,6 +29,7 @@ cfg.CUDNN.ENABLED = True  # cudnn config
 # dataset config
 cfg.DATASET = CN()
 cfg.DATASET.BASE_DIR=BASE_DATA_DIR
+cfg.DATASET.NPZ_FILE=''  # NPZ 파일명 (기본값: 빈 문자열)
 cfg.DATASET.ROOT_AIST_SPIN_3D=[2,3]
 cfg.DATASET.ROOT_AIST_TCMR_3D=[2,3]
 cfg.DATASET.ROOT_AIST_VIBE_3D=[2,3]
@@ -50,6 +51,7 @@ cfg.DATASET.ROOT_PW3D_SPIN_3D=[2,3]
 cfg.DATASET.ROOT_PW3D_TCMR_3D=[2,3]
 cfg.DATASET.ROOT_PW3D_VIBE_3D=[2,3]
 cfg.DATASET.ROOT_H36M_MIX_3D=[0]
+cfg.DATASET.ROOT_CUSTOM_HYBRIK_3D_HYBRIK_3D=[0]  # HybrIK 커스텀 데이터셋용
 
 
 # model config
@@ -134,6 +136,10 @@ def parse_args():
                         type=str,
                         default="",
                         help='traditional filters [savgol,oneeuro,gaus1d]')
+    parser.add_argument('--npz_file',
+                        type=str,
+                        default="",
+                        help='NPZ file name (e.g., ohyeah_hybrik_3D_test.npz)')
 
     args = parser.parse_args()
     print(args, end='\n\n')
@@ -151,5 +157,9 @@ def parse_args():
 
     cfg.EVALUATE.PRETRAINED = args.checkpoint
     cfg.EVALUATE.TRADITION = args.tradition
+    
+    # NPZ 파일명 설정
+    if args.npz_file:
+        cfg.DATASET.NPZ_FILE = args.npz_file
 
     return cfg, cfg_file

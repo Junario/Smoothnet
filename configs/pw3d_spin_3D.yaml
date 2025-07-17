@@ -9,6 +9,10 @@ DATASET_NAME : ''
 ESTIMATOR : ''
 BODY_REPRESENTATION : ''
 
+DATASET :
+  BASE_DIR : ''
+  NPZ_FILE : ''
+
 SMPL_MODEL_DIR : "data/smpl/"
 
 CUDNN :

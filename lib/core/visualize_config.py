@@ -29,6 +29,7 @@ cfg.CUDNN.ENABLED = True  # cudnn config
 # dataset config
 cfg.DATASET = CN()
 cfg.DATASET.BASE_DIR=BASE_DATA_DIR
+cfg.DATASET.NPZ_FILE=''  # NPZ 파일명 (기본값: 빈 문자열)
 cfg.DATASET.ROOT_AIST_SPIN_3D=[2,3]
 cfg.DATASET.ROOT_AIST_TCMR_3D=[2,3]
 cfg.DATASET.ROOT_AIST_VIBE_3D=[2,3]
@@ -139,6 +140,10 @@ def parse_args():
     parser.add_argument('--output_video_path',
                         type=str,
                         help="visualize video output path")
+    parser.add_argument('--npz_file',
+                        type=str,
+                        default="",
+                        help='NPZ file name (e.g., ohyeah_hybrik_3D_test.npz)')
 
 
     args = parser.parse_args()
@@ -159,5 +164,9 @@ def parse_args():
 
     cfg.VIS.INPUT_VIDEO_NUMBER=args.visualize_video_id
     cfg.VIS.OUTPUT_VIDEO_PATH=args.output_video_path
+    
+    # NPZ 파일명 설정
+    if args.npz_file:
+        cfg.DATASET.NPZ_FILE = args.npz_file
 
     return cfg, cfg_file
